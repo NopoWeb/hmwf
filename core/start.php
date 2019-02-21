@@ -30,6 +30,24 @@ spl_autoload_register(function($class){
 // Parse routes to controller
 $raw_uri = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH),'/');
 
+
+if(defined('CACHE') && CACHE == true){
+    $cache_dir = ABSPATH.DS.'app'.DS.'cache'.DS;
+    if(empty($raw_uri)){
+        $cache_file = $cache_dir.'index.html';
+    }else{
+        if(!file_exists($cache_dir.$raw_uri)) mkdir($cache_dir.$raw_uri, 0777, true);
+        $cache_file = $cache_dir.$raw_uri.DS.'index.html';
+    }
+
+    if(file_exists($cache_file)){
+        header($_SERVER['SERVER_PROTOCOL']." 200 Ok");
+        $html = file_get_contents($cache_file);
+        exit($html);
+    }
+}
+
+
 // Extend some exception class
 class PageNotFound extends Exception{}
 
@@ -68,10 +86,17 @@ try {
             array_shift($args);
         }
         header($_SERVER['SERVER_PROTOCOL']." 200 Ok");
+        if(defined('CACHE') && CACHE == true) ob_start();
         if(is_null($args)){
             echo call_user_func(array($obj,$method));
         }else{
             echo call_user_func_array(array($obj,$method), $args);
+        }
+
+        if(defined('CACHE') && CACHE == true){
+            $html = ob_get_clean();
+            file_put_contents($cache_file, $html);
+            exit($html);
         }
     }else{
         throw new PageNotFound($method.' not found!');
