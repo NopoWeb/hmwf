@@ -1,0 +1,23 @@
+{
+    "name": "Heroky Micro Web Framework",
+    "description": "A small and lightweight flat file micro framework aimed to be deployed on Heroku. Designed to be small and fast.",
+    "keywords": [
+      "framework",
+      "MVC",
+      "lightweight"
+    ],
+    "website": "https://www.nopoweb.com/",
+    "repository": "https://github.com/NopoWeb/hmwf",
+    "logo": "https://avatars1.githubusercontent.com/u/22267133?s=200&v=4",
+    "success_url": "/",
+    "scripts": {
+      "postdeploy": "bundle exec rake bootstrap"
+    },
+    "formation": {
+      "web": {
+        "quantity": 2,
+        "size": "Performance-M"
+      }
+    },
+    "image": "heroku/php"
+  }
