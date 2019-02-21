@@ -9,9 +9,6 @@ if(!defined('ABSPATH')) define('ABSPATH', dirname(__DIR__));
 define('DS', DIRECTORY_SEPARATOR);
 define('VIEW_DIR', ABSPATH.DS.'app'.DS.'view');
 
-// Load  global helper
-include('helper.php');
-
 /**
  * Initialize PSR-4
  */
@@ -43,7 +40,6 @@ try {
         $args = null;
     }else{
         $fragments = explode('/',$raw_uri);
-        
         $class = array_shift($fragments);
         $class = ucwords(str_replace(array('_','-'),' ',$class));
         $class = str_replace(' ','',$class);
@@ -65,8 +61,12 @@ try {
     }else{       
         $obj = new $class;
     }
-    
+    if(!method_exists($obj,$method)) $method = 'any';
     if(method_exists($obj,$method)){
+        if($method == 'any'){
+            $args = explode('/',$raw_uri);
+            array_shift($args);
+        }
         header($_SERVER['SERVER_PROTOCOL']." 200 Ok");
         if(is_null($args)){
             echo call_user_func(array($obj,$method));
@@ -80,7 +80,7 @@ try {
     header($_SERVER['SERVER_PROTOCOL']." 404 Not Found");
     $view = new View;    
     echo $view->display('error.404', array(
-        'error' => $exception
+        'error_message' => $exception->getMessage()
     ));
     die();
 }

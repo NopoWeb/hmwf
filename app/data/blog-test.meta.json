@@ -1,0 +1,9 @@
+{
+    "title": "Blog test",
+    "description": "This is a Blog test",
+    "images": [],
+    "content": {
+        "type": "file",
+        "file": "blog-test.txt"
+    }
+}

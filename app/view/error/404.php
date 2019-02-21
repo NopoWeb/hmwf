@@ -1,1 +1,1 @@
-<h1><?=$error->getMessage();?></h1>
+<h1><?=$this->error_message;?></h1>
